@@ -7,11 +7,15 @@ const getInstagramThumbnailUrl = async (req, res) => {
     const { url } = req.body;
     if (!url) return res.status(400).send("URL is required");
 
+    console.log("Received URL:", url);
+
+    // Validate the URL format
     const validUrl = /^(http|https):\/\/[^ "]+$/.test(url);
     if (!validUrl) {
       return res.status(400).send("Invalid URL format");
     }
 
+    // Fetch the HTML content of the page
     const { data: html } = await axios.get(url);
     const $ = cheerio.load(html);
 
@@ -41,7 +45,7 @@ const getInstagramTranscriptFromUrl = async (req, res) => {
     console.log(url);
 
     const response = await axios.post(
-      `https://api.apify.com/v2/acts/apify~instagram-scraper/run-sync-get-dataset-items?token=${APIFY_API_KEY}`,
+      `https://api.apify.com/v2/acts/apify~instagram-scraper/run-sync-get-dataset-items?token=${process.env.APIFY_API_KEY}`,
       {
         addParentData: false,
         directUrls: [url],
