@@ -37,6 +37,7 @@ const convertVideoToAudioAndTranscribe = async (videoUrl) => {
       throw new Error("Failed to convert video to audio buffer.");
     }
 
+    console.log("audioBuffer :", audioBuffer);
     // Send the buffer to OpenAI's Whisper API
     const formData = new FormData();
     formData.append("file", audioBuffer, {
