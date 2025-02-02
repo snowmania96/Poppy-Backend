@@ -5,7 +5,7 @@ const cheerio = require("cheerio");
 const getYoutubeTranscriptFromUrl = async (req, res) => {
   try {
     const { url } = req.body;
-    console.log(url);
+    if (!url) return res.status(400).send("URL is required");
 
     const response = await axios.post(
       `https://api.apify.com/v2/acts/invideoiq~video-transcript-scraper/run-sync-get-dataset-items?token=${process.env.APIFY_API_KEY}`,
@@ -21,7 +21,7 @@ const getYoutubeTranscriptFromUrl = async (req, res) => {
 
     script = response.data[0].text;
     if (!script) {
-      res.status(404).send("Failed to convert");
+      console.log("Failed to fetch script");
     }
     res.status(200).json(script);
   } catch (err) {

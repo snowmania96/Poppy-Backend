@@ -7,8 +7,6 @@ const getInstagramThumbnailUrl = async (req, res) => {
     const { url } = req.body;
     if (!url) return res.status(400).send("URL is required");
 
-    console.log("Received URL:", url);
-
     // Validate the URL format
     const validUrl = /^(http|https):\/\/[^ "]+$/.test(url);
     if (!validUrl) {
@@ -33,16 +31,18 @@ const getInstagramThumbnailUrl = async (req, res) => {
       res.status(200).json(imageUrl);
     } else {
       console.log("No suitable image found.");
+      res.status(404).send("No suitable image found.");
     }
   } catch (err) {
-    console.log(err);
+    console.log("Fail to get thumbnailUrl");
+    res.status(500).send("Fail to get thumbnailUrl: ", err);
   }
 };
 
 const getInstagramTranscriptFromUrl = async (req, res) => {
   try {
     const { url } = req.body;
-    console.log(url);
+    if (!url) return res.status(400).send("URL is required");
 
     const response = await axios.post(
       `https://api.apify.com/v2/acts/apify~instagram-scraper/run-sync-get-dataset-items?token=${process.env.APIFY_API_KEY}`,
@@ -64,7 +64,11 @@ const getInstagramTranscriptFromUrl = async (req, res) => {
       }
     );
 
-    const videoUrl = response.data[0].videoUrl;
+    const videoUrl = response.data[0]?.videoUrl;
+    if (!videoUrl) {
+      console.log("Video Not Found");
+      res.status(404).send("Video Not Found");
+    }
     const script = await convertVideoToAudioAndTranscribe(videoUrl);
     res.status(200).json(script);
   } catch (err) {

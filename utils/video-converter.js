@@ -37,7 +37,6 @@ const convertVideoToAudioAndTranscribe = async (videoUrl) => {
       throw new Error("Failed to convert video to audio buffer.");
     }
 
-    console.log("audioBuffer :", audioBuffer);
     // Send the buffer to OpenAI's Whisper API
     const formData = new FormData();
     formData.append("file", audioBuffer, {
@@ -56,10 +55,14 @@ const convertVideoToAudioAndTranscribe = async (videoUrl) => {
         },
       }
     );
-
-    return openAiResponse.data.text;
+    const script = openAiResponse.data?.text;
+    if (!script) {
+      console.log("Failed to fetch script");
+    }
+    return script;
   } catch (error) {
     console.error("Error during conversion and transcription:", error.message);
+    res.status(500).send("error during fetching script");
   }
 };
 

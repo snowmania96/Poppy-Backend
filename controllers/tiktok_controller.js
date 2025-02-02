@@ -5,8 +5,6 @@ const getTikTokThumbnailUrl = async (req, res) => {
     const { url } = req.body;
     if (!url) return res.status(400).send("URL is required");
 
-    console.log("Fetching TikTok URL:", url);
-
     const validUrl = /https:\/\/www\.tiktok\.com\/@.+\/video\/\d+/;
     if (!validUrl.test(url)) {
       return res.status(400).send("Invalid TikTok URL format");
@@ -32,6 +30,13 @@ const getTikTokThumbnailUrl = async (req, res) => {
 const getTikTokTranscriptFromUrl = async (req, res) => {
   try {
     const { url } = req.body;
+    if (!url) return res.status(400).send("URL is required");
+
+    const validUrl = /https:\/\/www\.tiktok\.com\/@.+\/video\/\d+/;
+    if (!validUrl.test(url)) {
+      return res.status(400).send("Invalid TikTok URL format");
+    }
+
     const response = await axios.post(
       `https://api.apify.com/v2/acts/invideoiq~video-transcript-scraper/run-sync-get-dataset-items?token=${process.env.APIFY_API_KEY}`,
       {
@@ -43,8 +48,16 @@ const getTikTokTranscriptFromUrl = async (req, res) => {
         },
       }
     );
-    res.status(200).json(response.data[0].text);
-  } catch (err) {}
+
+    const script = response.data[0]?.text;
+    if (!script) {
+      console.log("Failed to fetch script");
+    }
+    res.status(200).json(script);
+  } catch (err) {
+    console.error("Error fetching from API:", err.message);
+    res.status(500).send("An error occurred while fetching");
+  }
 };
 
 module.exports = { getTikTokThumbnailUrl, getTikTokTranscriptFromUrl };

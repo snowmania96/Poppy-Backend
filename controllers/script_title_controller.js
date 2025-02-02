@@ -1,7 +1,8 @@
 const axios = require("axios");
 
 const getTitleFromScript = async (req, res) => {
-  console.log(req.body);
+  const script = req.body?.script;
+  if (!script) return res.status(400).send("Script not found");
   try {
     const response = await axios.post(
       "https://api.openai.com/v1/chat/completions",
@@ -14,7 +15,7 @@ const getTitleFromScript = async (req, res) => {
           },
           {
             role: "user",
-            content: `Here's a script. '${req.body.script}'  Please give me a short title for this script.`,
+            content: `Here's a script. '${script}'  Please give me a short title for this script.`,
           },
         ],
       },
@@ -25,8 +26,12 @@ const getTitleFromScript = async (req, res) => {
         },
       }
     );
+    const title = response.data?.choices?.[0]?.message?.content?.slice(1, -1);
+    if (!title) {
+      console.log("Failed to fetch title");
+    }
 
-    res.status(200).json(response.data?.choices?.[0]?.message?.content?.slice(1, -1));
+    res.status(200).json(title);
   } catch (error) {
     console.error("Error fetching title:", error.message);
     res.status(500).send("An error occurred while fetching the title");
