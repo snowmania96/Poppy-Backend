@@ -26,7 +26,7 @@ const getTitleFromScript = async (req, res) => {
       }
     );
 
-    res.status(200).json(response.data);
+    res.status(200).json(response.data?.choices?.[0]?.message?.content?.slice(1, -1));
   } catch (error) {
     console.error("Error fetching title:", error.message);
     res.status(500).send("An error occurred while fetching the title");
