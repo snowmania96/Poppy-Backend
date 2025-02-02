@@ -11,7 +11,6 @@ const {
 } = require("../controllers/tiktok_controller");
 const { getFacebookInfo } = require("../controllers/facebook_controller");
 const { getTitleFromScript } = require("../controllers/script_title_controller");
-const { getScriptAndTitleFromAudio } = require("../controllers/audio_script_controller");
 
 const router = express.Router();
 
@@ -26,7 +25,7 @@ router.post("/youtube/script", getYoutubeTranscriptFromUrl);
 router.post("/tiktok/script", getTikTokTranscriptFromUrl);
 
 router.post("/title", getTitleFromScript);
-router.post("/audioScript", getScriptAndTitleFromAudio);
+
 // router.post("/facebook/script", getFacebookTranscriptFromUrl);
 
 module.exports = router;
