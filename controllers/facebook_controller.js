@@ -7,10 +7,11 @@ const getFacebookInfo = async (req, res) => {
     const { url } = req.body;
     if (!url) return res.status(400).send("URL is required");
 
-    const validUrl = /^(http|https):\/\/www\.facebook\+$/;
-    if (!validUrl.test(url)) {
-      return res.status(400).send("Invalid FaceBook URL format");
-    }
+    // const validUrl =
+    //   /^https:\/\/(www\.)?facebook\.com\/(groups\/\d+|events\/\d+|[a-zA-Z0-9.]+(?:[._-][a-zA-Z0-9]+)*|pages\/[a-zA-Z0-9._-]+(?:\/\d+)?)(\?([a-zA-Z0-9-_]+=[a-zA-Z0-9-_]+)(&[a-zA-Z0-9-_]+=[a-zA-Z0-9-_]+)*)?$/;
+    // if (!validUrl.test(url)) {
+    //   return res.status(400).send("Invalid FaceBook URL format");
+    // }
 
     const response = await axios.post(
       `https://api.apify.com/v2/acts/apify~facebook-ads-scraper/run-sync-get-dataset-items?token=${process.env.APIFY_API_KEY}`,
