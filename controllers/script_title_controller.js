@@ -2,7 +2,7 @@ const axios = require("axios");
 
 const getTitleFromScript = async (req, res) => {
   const script = req.body?.script;
-  if (!script) return res.status(400).send("Script not found");
+  if (!script) return res.status(404).send("Script not found");
   try {
     const response = await axios.post(
       "https://api.openai.com/v1/chat/completions",
