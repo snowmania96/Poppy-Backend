@@ -13,6 +13,7 @@ const { getFacebookInfo } = require("../controllers/facebook_controller");
 const { getTitleFromScript } = require("../controllers/script_title_controller");
 const { getTitleFromImage } = require("../controllers/image_controller");
 const { answerTheQueation } = require("../controllers/aiChat_controller");
+const { getContentFromDoc, upload } = require("../controllers/document_controller");
 
 const router = express.Router();
 
@@ -29,6 +30,7 @@ router.post("/tiktok/script", getTikTokTranscriptFromUrl);
 router.post("/title", getTitleFromScript);
 router.post("/image", getTitleFromImage);
 router.post("/chat", answerTheQueation);
+router.post("/document", upload.single("file"), getContentFromDoc);
 
 // router.post("/facebook/script", getFacebookTranscriptFromUrl);
 
